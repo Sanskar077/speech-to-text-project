@@ -24,7 +24,30 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      "audio/mpeg",
+      "audio/wav",
+      "audio/webm",
+      "audio/ogg",
+      "audio/mp4",
+      "audio/x-m4a",
+    ];
+
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid audio file type"), false);
+    }
+  },
+
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
+});
 
 app.get("/", (req, res) => {
   res.send("This server is for transcribing audio files using Deepgram API");
@@ -32,6 +55,13 @@ app.get("/", (req, res) => {
 
 app.post("/upload", upload.single("audio"), async (req, res) => {
   try {
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No audio file uploaded",
+      });
+    }
+
     const audio = fs.readFileSync(req.file.path);
 
     const response = await deepgram.transcription.preRecorded(
@@ -50,22 +80,24 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
       response.results.channels[0]
       .alternatives[0].transcript;
 
-const savedTranscription = await Transcription.create({
-  filename: req.file.originalname,
-  transcription: text,
-});
+    const savedTranscription =
+      await Transcription.create({
+        filename: req.file.originalname,
+        transcription: text,
+      });
 
-res.json({
-  message: "Transcription successful",
-  text,
-  data: savedTranscription,
-});
+    res.json({
+      message: "Transcription successful",
+      text,
+      data: savedTranscription,
+    });
 
   } catch (error) {
     console.log(error);
 
     res.status(500).json({
-      message: "Transcription failed",
+      message:
+        error.message || "Transcription failed",
     });
   }
 });

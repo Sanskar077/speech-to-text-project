@@ -349,7 +349,10 @@ body {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* Result */
-.result-card { animation: fadeIn 0.4s ease; }
+.result-card { animation: fadeIn 0.4s ease;
+  overflow-y: auto;
+  max-height: 300px;
+}
 
 .result-header {
   display: flex;
