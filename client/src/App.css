@@ -21,7 +21,7 @@
 }
 
 body {
-  background: var(--bg);
+  background:radial-gradient(circle at top, #1a2140 0%, #0d0f14 40%),var(--bg);;
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
@@ -30,7 +30,7 @@ body {
 
 /* Shell */
 .app-shell {
-  max-width: 680px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 40px 20px 80px;
 }
@@ -82,12 +82,20 @@ body {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  backdrop-filter: blur(10px);
   border-radius: var(--radius);
   padding: 28px;
   transition: border-color 0.2s;
+  transition: all 0.25s ease;
+  animation: fadeUp 0.35s ease;
 }
 
-.card:hover { border-color: #2e3347; }
+.card:hover {
+  border-color: #3d4560;
+  transform: translateY(-2px);
+}
+
 
 .card-title {
   font-family: 'Syne', sans-serif;
@@ -247,11 +255,13 @@ body {
   cursor: pointer;
   transition: all 0.2s;
   color: var(--text-muted);
+  min-height: 180px;
+  transition: all 0.25s ease;
 }
 
 .upload-zone:hover {
+  background: rgba(91, 110, 245, 0.06);
   border-color: var(--accent);
-  background: rgba(91, 110, 245, 0.04);
   color: var(--text-dim);
 }
 
@@ -308,12 +318,15 @@ body {
   color: white;
   box-shadow: 0 6px 24px var(--accent-glow);
   transition: all 0.2s;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .transcribe-btn:hover:not(.transcribe-btn--disabled) {
   background: var(--accent-hover);
   box-shadow: 0 8px 30px var(--accent-glow);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .transcribe-btn--disabled {
@@ -376,9 +389,41 @@ body {
   white-space: pre-wrap;
   word-break: break-word;
   min-height: 80px;
+  line-height: 1.9;
+  font-size: 1rem;
+  white-space: pre-wrap;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 20px 14px 60px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .app-title {
+    font-size: 1.3rem;
+  }
+
+  .transcribe-btn {
+    width: 100%;
+  }
 }

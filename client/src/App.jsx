@@ -167,7 +167,7 @@ function App() {
           <WaveformIcon />
         </div>
         <div>
-          <h1 className="app-title">VoiceScript</h1>
+          <h1 className="app-title">Speeck-To-Text</h1>
           <p className="app-subtitle">Speech to Text Transcription</p>
         </div>
       </header>
