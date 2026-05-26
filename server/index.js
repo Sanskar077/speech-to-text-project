@@ -5,6 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
 const { Deepgram } = require("@deepgram/sdk");
+const Transcription = require("./models/Transcription");
 
 const deepgram = new Deepgram(
   process.env.DEEPGRAM_API_KEY
@@ -26,7 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.get("/", (req, res) => {
-  res.send("Backend running");
+  res.send("This server is for transcribing audio files using Deepgram API");
 });
 
 app.post("/upload", upload.single("audio"), async (req, res) => {
@@ -49,16 +50,39 @@ app.post("/upload", upload.single("audio"), async (req, res) => {
       response.results.channels[0]
       .alternatives[0].transcript;
 
-    res.json({
-      message: "Transcription successful",
-      text,
-    });
+const savedTranscription = await Transcription.create({
+  filename: req.file.originalname,
+  transcription: text,
+});
+
+res.json({
+  message: "Transcription successful",
+  text,
+  data: savedTranscription,
+});
 
   } catch (error) {
     console.log(error);
 
     res.status(500).json({
       message: "Transcription failed",
+    });
+  }
+});
+app.get("/transcriptions", async (req, res) => {
+  try {
+    const transcriptions =
+      await Transcription.find().sort({
+        createdAt: -1,
+      });
+
+    res.json(transcriptions);
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Failed to fetch transcriptions",
     });
   }
 });
