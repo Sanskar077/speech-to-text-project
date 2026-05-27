@@ -132,7 +132,7 @@ function App() {
       const formData = new FormData();
       formData.append("audio", source, selectedFile?.name || "recording.webm");
 
-      const res = await fetch("http://localhost:5000/upload", {
+      const res = await fetch("https://speech-to-text-project-ikq6.onrender.com/upload", {
         method: "POST",
         body: formData,
       });
